@@ -1,20 +1,23 @@
 const Sequelize = require('sequelize')
-const modelsPersonajes = require('./models/personajes') ;
-const modelsPeliculasSeries = require('./models/peliculasSeries') ;
-const modelsGeneros = require('./models/generos') ;
-const modelsPersonajePelicula = require('./models/personajePelicula') ;
-const modelsGenerojePelicula = require('./models/generoPelicula') ;
 
-const sequelize = new Sequelize('AZ0h4WL1MU','AZ0h4WL1MU', '9mDKk6z3xI',{
+const sequelize = new Sequelize('HzjJgubnHn','HzjJgubnHn', 'audTUtghiW',{
     host: 'remotemysql.com',
     dialect:'mysql'
 });
-const personaje = modelsPersonajes(sequelize, Sequelize);
-const peliculaSerie = modelsPeliculasSeries(sequelize, Sequelize);
-const genero = modelsGeneros(sequelize, Sequelize);
-const personajePelicula = modelsPersonajePelicula(sequelize, Sequelize)
-const generoPelicula = modelsGenerojePelicula(sequelize, Sequelize)
+const modelsPersonajes = require('./models/personajes') ;
+const modelsUsers = require('./models/usuarios');
+/*const modelsPeliculas = require('./models/peliculas') ;
+const modelsGeneros = require('./models/generos') ;
+const modelsPeliculas_personajes = require('./models/peliculas_personaje');
+const modelsGenero_peliculas = require('./models/generos_pelicula');*/
 
-sequelize.sync({force: true})
+const personajesDB = modelsPersonajes(sequelize, Sequelize);
+const usersDB = modelsUsers(sequelize, Sequelize);
+/*const peliculasDB = modelsPeliculas(sequelize, Sequelize);
+const generosDB = modelsGeneros(sequelize, Sequelize);
+const peliculas_personajesDB = modelsPeliculas_personajes(sequelize, Sequelize);
+const generos_peliculasDB = modelsGenero_peliculas(sequelize, Sequelize);*/
 
-module.exports = {personaje, peliculaSerie, genero, personajePelicula, generoPelicula}
+sequelize.sync({force: false})
+
+module.exports = {personajesDB, usersDB/* peliculas, generos, roles, peliculas_personajes, generos_peliculas*/}
