@@ -44,7 +44,7 @@ const token = (user) =>{
         createdAt: moment().unix(),
         expiredAt: moment().add(10, 'minutes').unix()
     }
-    return jwt.encode(payload) 
+    return jwt.encode(payload, 'variable de entorno') 
 }
 
 module.exports = router;
