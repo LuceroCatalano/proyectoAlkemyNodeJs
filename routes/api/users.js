@@ -1,6 +1,6 @@
 const router = require('express').Router();
 const bcrypt = require('bcryptjs');
-const usersDB = require('../../db');
+const { usersDB } = require('../../db');
 const { check, validationResult } = require('express-validator');
 const moment = require('moment');
 const jwt = require('jwt-simple') 
@@ -22,7 +22,7 @@ router.post('/register', [
 });
 
 router.post('/login', async (req, res) =>{
-const usersDB = require('../../db');
+
 const user = await usersDB.findOne({where: {email: req.body.email}})
 if(user){
     const valida = bcrypt.compareSync(req.body.password, user.password)

@@ -12,9 +12,13 @@ try{
     payload = jwt.encode(userToken, 'variable de entorno')}
 catch (err){
     return res.json({error: 'Token Invalido'})}
+
 if(payload.expiredAt < moment().unix()){
     return res.json({error: 'Token Expirado'})
 }
+
+req.userId = payload.userId,
+
 next();
 }
 
