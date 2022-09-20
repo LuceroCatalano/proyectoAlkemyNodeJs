@@ -1,40 +1,40 @@
 const router = require('express').Router();
 const { PersonajesDB } = require('../../db')
 
-//toda la lista de personajes
+// Busca toda la lista de personajes
 router.get('/', async (req, res) => {
     const personajes = await PersonajesDB.findAll();
-    res.json(personajes)
+    res.json(personajes);
 });
 
-//busqueda de personaje por nombre
+// Busca personaje por nombre
 router.get('/:nombre', async (req, res) => {
-    const personaje = await PersonajesDB.findOne(req.params, {
-        where: {nombre: req.params.nombre}
-    })
+    const personaje = await PersonajesDB.findOne(
+        { where: {nombre: req.params.nombre} })
     res.json(personaje)
 });
 
-//crea personaje
+// Crea personaje
 router.post('/', async (req, res) => {
 const personaje = await PersonajesDB.create(req.body);
-res.json({mensaje: 'Se ha creado correctamente', personaje})
+res.json(
+    { success: 'Se ha creado correctamente', personaje })
 });
 
-//modifica personaje por nombre
-router.put('/:nombre', async (req,res) =>{
-    await PersonajesDB.upDate(req.body, {
+// Modifica personaje por nombre
+router.put('/:nombre', async (req,res) => {
+    await PersonajesDB.update(req.body, {
         where: {nombre: req.params.nombre}
     });
-    res.json({mensaje:'Se ha modificado correctamente'})
+    res.json({success:'Se ha modificado correctamente '})
 });
 
-//borra personaje por nombre
+// Borra personaje por nombre
 router.delete('/:nombre', async (req, res) =>{
-    await PersonajesDB.destroy({
+    const personaje = await PersonajesDB.destroy({
         where: { nombre: req.params.nombre }
     });
-    res.json({mensaje:'Se ha borrado correctamente'})
+    res.json({mensaje:'Se ha borrado correctamente', personaje})
 })
 
 module.exports = router;

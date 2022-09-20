@@ -1,9 +1,9 @@
 const router = require('express').Router();
 const bcrypt = require('bcryptjs');
-const { usersDB } = require('../../db');
-const { check, validationResult } = require('express-validator');
 const moment = require('moment');
 const jwt = require('jwt-simple') 
+const { check, validationResult } = require('express-validator');
+const { usersDB } = require('../../db');
 
 
 router.post('/register', [
@@ -21,8 +21,7 @@ router.post('/register', [
     }
 });
 
-router.post('/login', async (req, res) =>{
-
+router.post('/login', async (req, res) => {
 const user = await usersDB.findOne({where: {email: req.body.email}})
 if(user){
     const valida = bcrypt.compareSync(req.body.password, user.password)
@@ -30,19 +29,19 @@ if(user){
         res.json({succes: token(user)});
     }
     else{
-        res.json({error: 'Usuario o Contraseña invalidos'})
+        res.json({error: 'Contraseña invalida'})
     }
 }
 else{
-    res.json({error: 'Usuario o Contraseña invalidos'})
+    res.json({error: 'Usuario invalido o inexistente'})
 }
 });
 
-const token = (user) =>{
+const token = (user) => {
     const payload = {
         userId: user.id,
         createdAt: moment().unix(),
-        expiredAt: moment().add(10, 'minutes').unix()
+        expiredAt: moment().add(60, 'minutes').unix()
     }
     return jwt.encode(payload, 'variable de entorno') 
 }

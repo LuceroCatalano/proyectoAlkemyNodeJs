@@ -2,24 +2,25 @@ const jwt = require('jwt-simple');
 const moment = require('moment');
 
 const controllerToken = (req, res, next) => {
-    if(!req.headers['userToken']){
-        return res.json({error: 'Es necesario un Token'})
+    if(req.headers['token']) {
+        const userToken = req.headers['token'];
+        var payload = {};
+
+        try{
+            payload = jwt.decode(userToken, 'variable de entorno')}
+        catch (err){
+            return res.json({error: 'Token Invalido'})}
+
+        if(payload.expiredAt < moment().unix()){
+            return res.json({error: 'El tiempo ha expirado. Necesita un nuevo Token'})
+        }
+        req.userId = payload.userId;
     }
-const userToken = req.headers['userToken'];
-var payload = {};
-
-try{
-    payload = jwt.encode(userToken, 'variable de entorno')}
-catch (err){
-    return res.json({error: 'Token Invalido'})}
-
-if(payload.expiredAt < moment().unix()){
-    return res.json({error: 'Token Expirado'})
-}
-
-req.userId = payload.userId,
-
-next();
+    else{
+        return res.json({error: 'Es necesario un Token para continuar.'})
+        
+    }
+    next();
 }
 
 module.exports = {controllerToken: controllerToken};
