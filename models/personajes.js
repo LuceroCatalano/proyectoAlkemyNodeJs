@@ -1,17 +1,12 @@
 module.exports = (sequelize, DataTypes) => {
     return sequelize.define("personaje", {
-        id:{
-          type: DataTypes.INTEGER,
-          primaryKey: true,
-          autoIncrement: true
-        },
-        imagen: DataTypes.STRING,
-        nombre:{ 
+      nombre:{ 
           type: DataTypes.STRING,
           primaryKey: true,
         },
-        edad: DataTypes.INTEGER,
-        peso: DataTypes.INTEGER,
-        historia: DataTypes.STRING
+      imagen: DataTypes.STRING,
+      edad: DataTypes.INTEGER,
+      peso: DataTypes.INTEGER,
+      historia: DataTypes.STRING
       });
 }

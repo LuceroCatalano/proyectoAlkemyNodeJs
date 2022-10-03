@@ -26,7 +26,7 @@ const user = await usersDB.findOne({where: {email: req.body.email}})
 if(user){
     const valida = bcrypt.compareSync(req.body.password, user.password)
     if(valida){
-        res.json({succes: token(user)});
+        res.json({Token: token(user)});
     }
     else{
         res.json({error: 'Contraseña invalida'})
