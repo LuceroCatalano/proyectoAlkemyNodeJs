@@ -9,15 +9,15 @@ const { usersDB } = require('../../db');
 router.post('/register', [
     check('email', 'Debe ingresar un Email valido').isEmail(),
     check('email', 'El Email es obligatorio').not().isEmpty(),
-    check('password', 'El Password es obligatorio').not().isEmpty(),
-], async (req, res) => {
+    check('password', 'El Password es obligatorio').not().isEmpty()],
+    async (req, res) => {
     const error = validationResult(req)
     if(error.isEmpty()){
         req.body.password = bcrypt.hashSync(req.body.password);
         const user = await usersDB.create(req.body);
         res.json(user)}
     else{
-        res.status(422).json({error:error})
+        res.status(422).json(error)
     }
 });
 

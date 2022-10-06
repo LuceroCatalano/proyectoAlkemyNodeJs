@@ -1,12 +1,14 @@
 module.exports = (sequelize, DataTypes)=>{
     return sequelize.define("peliculas_personajes", {
-        nombre:{
+        personajes:{
           type: DataTypes.STRING,
           primaryKey: true,
+          unique: true
         },
-          idMovie:{ 
+        peliculas:{ 
           type: DataTypes.INTEGER,
           primaryKey: true,
+          unique: true
         },         
       });
     }

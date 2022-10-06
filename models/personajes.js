@@ -3,10 +3,11 @@ module.exports = (sequelize, DataTypes) => {
       nombre:{ 
           type: DataTypes.STRING,
           primaryKey: true,
+          unique: true
         },
       imagen: DataTypes.STRING,
       edad: DataTypes.INTEGER,
       peso: DataTypes.INTEGER,
-      historia: DataTypes.STRING
+      historia: DataTypes.TEXT
       });
 }

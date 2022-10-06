@@ -8,7 +8,7 @@ const controllerToken = (req, res, next) => {
 
         try{
             payload = jwt.decode(userToken, 'variable de entorno')}
-        catch (err){
+        catch (error){
             return res.json({error: 'Token Invalido'})}
 
         if(payload.expiredAt < moment().unix()){

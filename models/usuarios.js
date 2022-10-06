@@ -3,6 +3,8 @@ module.exports = (sequelize, DataTypes) => {
       email: {
         type: DataTypes.STRING,
         primaryKey: true,
+        
+        
       },
       password: {
         type: DataTypes.STRING

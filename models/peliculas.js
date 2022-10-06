@@ -3,12 +3,12 @@ module.exports = (sequelize, DataTypes)=>{
         idMovie:{
           type: DataTypes.INTEGER,
           primaryKey: true,
-          autoIncrement: true
+          autoIncrement: true,
+          unique:true
         },
         titulo: DataTypes.STRING,
         imagen: DataTypes.STRING,
         fechaCreacion: DataTypes.DATE,
-        calificacion: DataTypes.INTEGER,
-               
+        calificacion: DataTypes.INTEGER
       });
     }
