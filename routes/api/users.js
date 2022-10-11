@@ -3,7 +3,8 @@ const bcrypt = require('bcryptjs');
 const moment = require('moment');
 const jwt = require('jwt-simple') 
 const { check, validationResult } = require('express-validator');
-const { usersDB } = require('../../db');
+const { UsersDB } = require('../../db');
+
 
 
 router.post('/register', [
@@ -11,31 +12,40 @@ router.post('/register', [
     check('email', 'El Email es obligatorio').not().isEmpty(),
     check('password', 'El Password es obligatorio').not().isEmpty()],
     async (req, res) => {
-    const error = validationResult(req)
-    if(error.isEmpty()){
-        req.body.password = bcrypt.hashSync(req.body.password);
-        const user = await usersDB.create(req.body);
-        res.json(user)}
-    else{
-        res.status(422).json(error)
+        try{
+            const err = validationResult(req)
+            if(err.isEmpty()){
+            req.body.password = bcrypt.hashSync(req.body.password);
+            const user = await UsersDB.create(req.body);
+            res.json(user)}
+        else{
+            res.status(422).json(err)
+        }}
+    catch (error){
+        res.json(error)
     }
 });
 
 router.post('/login', async (req, res) => {
-const user = await usersDB.findOne({where: {email: req.body.email}})
-if(user){
-    const valida = bcrypt.compareSync(req.body.password, user.password)
-    if(valida){
-        res.json({Token: token(user)});
+const user = await UsersDB.findOne({where: {email: req.body.email}})
+try{
+    if(user){
+        const valida = bcrypt.compareSync(req.body.password, user.password)
+        
+        if(valida){
+            res.json({Token: token(user)});
+        }
+        else{
+            res.json({error: 'Contraseña invalida'})
+        }
     }
     else{
-        res.json({error: 'Contraseña invalida'})
+        res.json({error: 'Usuario invalido o inexistente'})
     }
 }
-else{
-    res.json({error: 'Usuario invalido o inexistente'})
-}
-});
+catch(error){
+    return res.json(error)
+}});
 
 const token = (user) => {
     const payload = {

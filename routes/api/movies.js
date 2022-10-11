@@ -1,11 +1,11 @@
 const router = require('express').Router();
-const { peliculasDB } = require('../../db')
+const { PeliculasDB, PersonajesDB } = require('../../db')
+const { sequelizeDB } = require('../../db')
 const { QueryTypes } = require('sequelize');
-const { sequelize } = require('../../db')
 
 // Busca toda la lista de peliculas
 router.get ('/', async (req, res) =>{
-    const data = await peliculasDB.findAll({
+    const data = await PeliculasDB.findAll({
         attributes: ['titulo', 'imagen', 'fechaCreacion']
     });
     res.json(data);
@@ -14,8 +14,20 @@ router.get ('/', async (req, res) =>{
 // Crea pelicula
 router.post('/', async (req, res) => {
     if (req.body.titulo && req.body.fechaCreacion && req.body.imagen && req.body.calificacion){
-        var pelicula = await peliculasDB.create(req.body);
-        res.json({mensaje: 'Se ha creado correctamente la pelicula', pelicula})
+        try{
+            const pelicula = await PeliculasDB.create(req.body);
+            res.json({mensaje: 'Se ha creado correctamente la pelicula', pelicula});  
+            /*const personajes = req.body.personajesAsociados;
+            for(let personaje of personajes){
+                const parametro = PersonajesDB.findOne({where: {nombre: `${personaje}`}})
+                if(parametro.length <= 0){
+                    await PersonajesDB.create({nombre: personaje})
+                }
+            }  */
+        }
+        catch(error){
+            return res.json(error)
+        }   
     }
     else(res.json({mensaje: 'Es necesario completar todos los campos para crear la pelicula'}))
     });
@@ -25,7 +37,7 @@ router.put('/', async (req,res) => {
     if(req.body.titulo){
         if(req.body.fechaCreacion || req.body.imagen || req.body.calificacion){
             var pelicula = req.body.titulo
-            await peliculasDB.update(req.body, {
+            await PeliculasDB.update(req.body, {
             where: {titulo: pelicula}
         });
             res.json({pelicula, mensaje:'Se ha modificado correctamente '})
@@ -40,7 +52,7 @@ router.put('/', async (req,res) => {
 router.delete('/', async (req, res) =>{
     if(req.body.titulo){
         const pelicula = req.body.titulo
-        await peliculasDB.destroy({
+        await PeliculasDB.destroy({
             where: { titulo: req.body.titulo }
         });
         res.json({pelicula, mensaje:'La pelicula se ha borrado correctamente'})
@@ -50,34 +62,37 @@ router.delete('/', async (req, res) =>{
 
 //Buscada de peliculas por genero, nombre o por orden
 router.get('/movies', async (req, res) => {
-    const parametro = req.query.genre || req.query.name || req.query.order;
-    if(req.query.genre){
-        const busqueda = await sequelize.query('SELECT * FROM `generos` WHERE `idGenero` = ?', {
+    const parametro =  req.query.name || req.query.genre || req.query.order;
+    if(req.query.name){
+        try{
+            const busqueda = await sequelizeDB.query('SELECT * FROM `peliculas` WHERE `titulo` = ?', {
             replacements: [parametro],
             type: QueryTypes.SELECT });
         if(busqueda.length==0){
             res.json({mensaje:'No se han encontrado coincidencias'})
+            console.log(busqueda);
+            console.log(parametro);
         }
         else { res.json(busqueda) }
-    }
-    
-    else if(req.query.name){
-        const busqueda = await sequelize.query('SELECT * FROM `peliculas` WHERE `titulo` = ?', {
-            replacements: [parametro],
-            type: QueryTypes.SELECT });
-        if(busqueda.length==0){
-            res.json({mensaje:'No se han encontrado coincidencias'})
         }
-        else { res.json(busqueda) }
+        catch(error){
+            return res.json(error)
+        }
    }
-    
-    else if(req.query.order){
-        const busqueda = await sequelize.query('SELECT * FROM `peliculas` WHERE `titulo` = ?', {
-            replacements: { order: ['ASC'] },
+    else if(req.query.genre){
+        try{
+            const busqueda = await sequelizeDB.query('SELECT * FROM `generos` WHERE `idGenero` = ?', {
+            replacements: [parametro],
             type: QueryTypes.SELECT });
-
-    res.json(busqueda)}
-    
+        if(busqueda.length==0){
+            res.json({mensaje:'No se han encontrado coincidencias'})
+        }
+        else { res.json(busqueda) }
+        }
+        catch(error){
+            return res.json(error)
+        }
+    }
 });
 
 module.exports = router;

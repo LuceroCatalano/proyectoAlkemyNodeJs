@@ -1,12 +1,16 @@
 module.exports = (sequelize, DataTypes)=>{
     return sequelize.define("genero", {
-      idGenero:{
-        type: DataTypes.INTEGER,
+      nombre:{ 
+        type:DataTypes.STRING,
         primaryKey: true ,
-        autoIncremet: true,
-        unique:true
+        unique: true
       },
-      nombre: DataTypes.STRING,
-      imagen: DataTypes.STRING 
+      imagen:{
+        type: DataTypes.STRING,
+        validate:{
+          isUrl: true
+        }
+      },
+      peliculasYseries: DataTypes.JSON(DataTypes.STRING)
       });
     }

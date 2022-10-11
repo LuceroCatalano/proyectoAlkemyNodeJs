@@ -1,24 +1,37 @@
 const { Sequelize } = require('sequelize')
 
-
-const sequelize = new Sequelize('HzjJgubnHn','HzjJgubnHn', 'audTUtghiW',{
+const sequelizeDB = new Sequelize('HzjJgubnHn','HzjJgubnHn', 'audTUtghiW',{
     host: 'remotemysql.com',
     dialect:'mysql'
 });
-const modelsUsers = require('./models/usuarios');
-const modelsPersonajes = require('./models/personajes') ;
-const modelsPeliculas = require('./models/peliculas') ;
-const modelsPeliculas_personajes = require('./models/peliculas_personajes');
-const modelsGeneros = require('./models/generos') ;
-const modelsGeneros_peliculas = require('./models/generos_peliculas');
 
-const usersDB = modelsUsers(sequelize, Sequelize);
-const personajesDB = modelsPersonajes(sequelize, Sequelize);
-const peliculasDB = modelsPeliculas(sequelize, Sequelize);
-const peliculas_personajesDB = modelsPeliculas_personajes(sequelize, Sequelize);
-const generosDB = modelsGeneros(sequelize, Sequelize);
-const generos_peliculasDB = modelsGeneros_peliculas(sequelize, Sequelize);
+const usuario = require('./models/usuarios');
+const personaje = require('./models/personajes') ;
+const pelicula = require('./models/peliculas') ;
+const generos = require('./models/generos') ;
+const PPs = require('./models/PPs');
+const PGs = require('./models/PGs');
 
-sequelize.sync({force: false})
+const UsersDB = usuario(sequelizeDB, Sequelize);
+const PersonajesDB = personaje(sequelizeDB, Sequelize);
+const PeliculasDB = pelicula(sequelizeDB, Sequelize);
+const GenerosDB = generos(sequelizeDB, Sequelize);
+const PPsDB = PPs(sequelizeDB, Sequelize);
+const PGsDB = PGs(sequelizeDB, Sequelize);
 
-module.exports = {sequelize, personajesDB, usersDB, peliculasDB, generosDB, peliculas_personajesDB, generos_peliculasDB}
+sequelizeDB.sync( { force: false} );
+
+PersonajesDB.belongsToMany(PeliculasDB, { through: 'PPs' });
+PeliculasDB.belongsToMany(PersonajesDB, { through: 'PPs' });
+GenerosDB.belongsToMany(PeliculasDB, {through: 'PGs'});
+PeliculasDB.belongsToMany(GenerosDB, {through: 'PGs'});
+
+module.exports = {
+    sequelizeDB,
+    UsersDB,
+    PersonajesDB,
+    PeliculasDB,
+    GenerosDB,
+    PPsDB,
+    PGsDB
+};
