@@ -1,5 +1,5 @@
 const router = require('express').Router();
-const { PeliculasDB, PersonajesDB } = require('../../db')
+const { PeliculasDB } = require('../../db')
 const { sequelizeDB } = require('../../db')
 const { QueryTypes } = require('sequelize');
 
@@ -17,13 +17,6 @@ router.post('/', async (req, res) => {
         try{
             const pelicula = await PeliculasDB.create(req.body);
             res.json({mensaje: 'Se ha creado correctamente la pelicula', pelicula});  
-            /*const personajes = req.body.personajesAsociados;
-            for(let personaje of personajes){
-                const parametro = PersonajesDB.findOne({where: {nombre: `${personaje}`}})
-                if(parametro.length <= 0){
-                    await PersonajesDB.create({nombre: personaje})
-                }
-            }  */
         }
         catch(error){
             return res.json(error)
@@ -65,13 +58,11 @@ router.get('/movies', async (req, res) => {
     const parametro =  req.query.name || req.query.genre || req.query.order;
     if(req.query.name){
         try{
-            const busqueda = await sequelizeDB.query('SELECT * FROM `peliculas` WHERE `titulo` = ?', {
+            const busqueda = await sequelizeDB.query('SELECT `idMovie` FROM `PPs` WHERE `nombre` = ?', {
             replacements: [parametro],
             type: QueryTypes.SELECT });
         if(busqueda.length==0){
             res.json({mensaje:'No se han encontrado coincidencias'})
-            console.log(busqueda);
-            console.log(parametro);
         }
         else { res.json(busqueda) }
         }
@@ -91,7 +82,23 @@ router.get('/movies', async (req, res) => {
         }
         catch(error){
             return res.json(error)
+        }    
+    }
+    else if(req.query.order){
+        try{
+            if(parametro == 'ASC'){
+                parametro.push(['createdAt', 'ASC'])
+            }
+            else{
+                parametro.push(['createdAt', 'DESC'])
+            }
+            return await PeliculasDB.findAll({
+                attributes: ['id', 'picture', 'title', 'createdAt'],
+                order: parametro})
         }
+        catch(error){
+            return res.json(error)
+        }    
     }
 });
 

@@ -1,30 +1,28 @@
 const { Sequelize } = require('sequelize')
 
-const sequelizeDB = new Sequelize('HzjJgubnHn','HzjJgubnHn', 'audTUtghiW',{
+const sequelizeDB = new Sequelize('cHC1H42Sdf','cHC1H42Sdf', 'Q0HW5hvC4R',{
     host: 'remotemysql.com',
     dialect:'mysql'
 });
 
-const usuario = require('./models/usuarios');
-const personaje = require('./models/personajes') ;
-const pelicula = require('./models/peliculas') ;
+const usuarios = require('./models/usuarios');
+const personajes = require('./models/Personajes') ;
+const peliculas = require('./models/peliculas') ;
 const generos = require('./models/generos') ;
-const PPs = require('./models/PPs');
 const PGs = require('./models/PGs');
+const PPs = require('./models/PPs');
 
-const UsersDB = usuario(sequelizeDB, Sequelize);
-const PersonajesDB = personaje(sequelizeDB, Sequelize);
-const PeliculasDB = pelicula(sequelizeDB, Sequelize);
+
+const UsersDB = usuarios(sequelizeDB, Sequelize);
+const PersonajesDB = personajes(sequelizeDB, Sequelize);
+const PeliculasDB = peliculas(sequelizeDB, Sequelize);
 const GenerosDB = generos(sequelizeDB, Sequelize);
-const PPsDB = PPs(sequelizeDB, Sequelize);
-const PGsDB = PGs(sequelizeDB, Sequelize);
+const PGsDB = PGs(sequelizeDB, Sequelize)
+const PPsDB = PPs(sequelizeDB, Sequelize)
 
 sequelizeDB.sync( { force: false} );
 
-PersonajesDB.belongsToMany(PeliculasDB, { through: 'PPs' });
-PeliculasDB.belongsToMany(PersonajesDB, { through: 'PPs' });
-GenerosDB.belongsToMany(PeliculasDB, {through: 'PGs'});
-PeliculasDB.belongsToMany(GenerosDB, {through: 'PGs'});
+
 
 module.exports = {
     sequelizeDB,

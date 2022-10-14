@@ -19,7 +19,7 @@ router.get('/', async (req, res) => {
 router.post('/', async (req, res) => {
         if (req.body.nombre && req.body.imagen && req.body.edad && req.body.peso && req.body.historia){
             try{
-                var personaje = await PersonajesDB.create(req.body);
+                const personaje = await PersonajesDB.create(req.body)                
                 res.json({mensaje: 'Se ha creado correctamente el Personaje', personaje})
             }
             catch (error){
@@ -67,10 +67,10 @@ router.delete('/', async (req, res) =>{
 
 //Buscar personajes por nombre, edad, peso o peliculas
 router.get('/characters', async (req, res) => {
-    const parametro = req.query.name || req.query.age || req.query.movies || req.query.weight;
+    const parametro = req.query.name || req.query.age || req.query.weight|| req.query.movies ;
     if(req.query.name){
         try{
-            const busqueda = await sequelizeDB.query('SELECT * FROM `personajes` WHERE `nombre` = ?', {
+            const busqueda = await sequelizeDB.query('SELECT * FROM `personajes`,`PPs` WHERE `nombre` = ?', {
                 replacements: [parametro],
                 type: QueryTypes.SELECT
             });
@@ -114,7 +114,7 @@ router.get('/characters', async (req, res) => {
 
     else if(req.query.movies){
         try{
-            const busqueda = await sequelizeDB.query('SELECT * FROM `PPs` WHERE `idMovie` = ?', {
+            const busqueda = await sequelizeDB.query('SELECT * FROM `PPs`, `personajes` WHERE `IdMovie` = ?', {
                 replacements: [parametro],
                 type: QueryTypes.SELECT });
                 res.json(busqueda);}

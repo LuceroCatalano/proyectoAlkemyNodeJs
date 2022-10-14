@@ -1,5 +1,5 @@
-module.exports = (sequelize, DataTypes) => {
-  return sequelize.define("personaje", { 
+module.exports = (sequelizeDB, DataTypes) => {
+   const personajes = sequelizeDB.define("personaje", { 
     nombre:{
       type: DataTypes.STRING,
       primaryKey: true,
@@ -12,8 +12,8 @@ module.exports = (sequelize, DataTypes) => {
       }
     },
     edad: DataTypes.INTEGER,
-    peso: DataTypes.INTEGER,
-    historia: DataTypes.TEXT,
-    peliculasRelacionadas: DataTypes.JSON(DataTypes.STRING)
+    peso: DataTypes.FLOAT,
+    historia: DataTypes.TEXT
   });
+  return personajes
 }

@@ -1,5 +1,5 @@
-module.exports = (sequelize, DataTypes)=>{
-  return sequelize.define("pelicula", {
+module.exports = (sequelizeDB, DataTypes)=>{
+  const peliculas = sequelizeDB.define("pelicula", {
     idMovie:{
       type: DataTypes.INTEGER,
       autoIncrement: true,
@@ -23,7 +23,7 @@ module.exports = (sequelize, DataTypes)=>{
         min: 1,
         max: 5
       }
-    },
-    personajesAsociados: DataTypes.JSON(DataTypes.STRING)
+    }
   });
+  return peliculas
 }

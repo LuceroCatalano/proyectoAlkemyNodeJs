@@ -1,5 +1,5 @@
 module.exports = (sequelize, DataTypes)=>{
-    return sequelize.define("genero", {
+    const generos = sequelize.define("genero", {
       nombre:{ 
         type:DataTypes.STRING,
         primaryKey: true ,
@@ -10,7 +10,7 @@ module.exports = (sequelize, DataTypes)=>{
         validate:{
           isUrl: true
         }
-      },
-      peliculasYseries: DataTypes.JSON(DataTypes.STRING)
-      });
-    }
+      }
+    });
+    return generos
+}
