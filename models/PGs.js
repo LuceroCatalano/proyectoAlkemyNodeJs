@@ -1,6 +1,3 @@
-const generos = require("./generos");
-const peliculas = require("./peliculas");
-
 module.exports = (sequelize, DataTypes) => {
   const PGs = sequelize.define("PG", {
     idPGs: {
@@ -12,13 +9,6 @@ module.exports = (sequelize, DataTypes) => {
     idMovie: DataTypes.INTEGER,
     nombre: DataTypes.STRING,
   });
-  PGs.associate = models => {
-    PGs.belongsTo(generos, {
-      foreignKey: 'nombre'
-    });
-    PGs.belongsTo(peliculas, {
-      foreignKey: 'idMovie'
-    });
-  }
+
   return PGs;
 };

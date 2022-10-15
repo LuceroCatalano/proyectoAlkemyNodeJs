@@ -1,6 +1,6 @@
 const router = require('express').Router();
 const { PersonajesDB } = require('../../db');
-const { sequelizeDB }  = require('../../db');
+const { sequelizeDB } = require('../../db');
 const { QueryTypes } = require('sequelize');
 
 // Buscar toda la lista de personajes
@@ -65,12 +65,12 @@ router.delete('/', async (req, res) =>{
     else(res.json({personaje, mensaje: 'Personaje inexistente'}))
 });
 
-//Buscar personajes por nombre, edad, peso o peliculas
-router.get('/characters', async (req, res) => {
+//Buscar personajes por nombre, edad, peso o por id de peliculas que participo 
+router.get('/Personajes', async (req, res) => {
     const parametro = req.query.name || req.query.age || req.query.weight|| req.query.movies ;
     if(req.query.name){
         try{
-            const busqueda = await sequelizeDB.query('SELECT * FROM `personajes`,`PPs` WHERE `nombre` = ?', {
+            const busqueda = await sequelizeDB.query('SELECT Per.nombre, Per.edad, Per.historia, Per.peso, Per.imagen, Pel.titulo FROM personajes Per, PPs, peliculas Pel WHERE Per.nombre = PPs.nombre AND Pel.idMovie = PPs.idMovie AND Per.nombre = ?',{
                 replacements: [parametro],
                 type: QueryTypes.SELECT
             });
@@ -85,7 +85,7 @@ router.get('/characters', async (req, res) => {
     
     else if(req.query.age){
         try{
-            const busqueda = await sequelizeDB.query('SELECT * FROM `personajes` WHERE `edad` = ?', {
+            const busqueda = await sequelizeDB.query('SELECT Per.nombre, Per.edad, Per.historia, Per.peso, Per.imagen, Pel.titulo FROM personajes Per, PPs, peliculas Pel WHERE Per.nombre = PPs.nombre AND PPs.idMovie = Pel.idMovie AND Per.edad = ?', {
                 replacements: [parametro],
                 type: QueryTypes.SELECT });
             if(busqueda.length === 0){
@@ -99,12 +99,12 @@ router.get('/characters', async (req, res) => {
     
     if(req.query.weight){
         try{
-            const busqueda = await sequelizeDB.query('SELECT * FROM `personajes` WHERE `peso` = ?', {
+            const busqueda = await sequelizeDB.query('SELECT Per.nombre, Per.edad, Per.historia, Per.peso, Per.imagen, Pel.titulo FROM personajes Per, PPs, peliculas Pel WHERE Per.nombre = PPs.nombre AND PPs.idMovie = Pel.idMovie AND Per.peso = ?', {
                 replacements: [parametro],
                 type: QueryTypes.SELECT
             });
             if(busqueda.length === 0){
-                res.json({mensaje:'No hay Personajes con ese nombre'})
+                res.json({mensaje:'No hay Personajes con ese peso'})
             }
             else { res.json(busqueda) }}
         catch(error){
@@ -114,10 +114,14 @@ router.get('/characters', async (req, res) => {
 
     else if(req.query.movies){
         try{
-            const busqueda = await sequelizeDB.query('SELECT * FROM `PPs`, `personajes` WHERE `IdMovie` = ?', {
+            const busqueda = await sequelizeDB.query('SELECT Per.nombre, Per.edad, Per.historia, Per.peso, Per.imagen FROM personajes Per, PPs, peliculas Pel WHERE Per.nombre = PPs.nombre AND Pel.idMovie = PPs.idMovie AND Pel.idMovie =?', {
                 replacements: [parametro],
                 type: QueryTypes.SELECT });
-                res.json(busqueda);}
+            if(busqueda.length == 0){
+                res.json({mensaje:'No se han encontrado coincidencias'})
+            }
+            else{ res.json(busqueda) }
+         }
         catch (error){
             return res.json(error)
         }

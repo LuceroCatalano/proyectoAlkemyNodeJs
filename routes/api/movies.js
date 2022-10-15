@@ -53,14 +53,15 @@ router.delete('/', async (req, res) =>{
     else(res.json({mensaje: 'Es necesario titulo para borrar una Pelicula'}))
 })
 
-//Buscada de peliculas por genero, nombre o por orden
-router.get('/movies', async (req, res) => {
-    const parametro =  req.query.name || req.query.genre || req.query.order;
-    if(req.query.name){
+//Buscada de peliculas por genero, nombre de personaje o por orden
+router.get('/peliculas', async (req, res) => {
+    const parametro =  req.query.title || req.query.genre || req.query.order;
+    if(req.query.title){
         try{
-            const busqueda = await sequelizeDB.query('SELECT `idMovie` FROM `PPs` WHERE `nombre` = ?', {
-            replacements: [parametro],
-            type: QueryTypes.SELECT });
+            const busqueda = await sequelizeDB.query('SELECT Pel.titulo, Pel.fechaCreacion, Pel.imagen, Pel.calificacion, Per.nombre FROM personajes Per, PPs, peliculas Pel WHERE Per.nombre = PPs.nombre AND Pel.idMovie = PPs.idMovie AND Pel.titulo = ?', {
+                replacements: [parametro],
+                type: QueryTypes.SELECT
+            });
         if(busqueda.length==0){
             res.json({mensaje:'No se han encontrado coincidencias'})
         }
@@ -72,29 +73,30 @@ router.get('/movies', async (req, res) => {
    }
     else if(req.query.genre){
         try{
-            const busqueda = await sequelizeDB.query('SELECT * FROM `generos` WHERE `idGenero` = ?', {
+            const busqueda = await sequelizeDB.query('SELECT Pel.titulo, Pel.fechaCreacion, Pel.imagen, Pel.calificacion FROM peliculas Pel, PGs, generos Gen WHERE Pel.idMovie = PGs.idMovie AND Gen.nombre = PGs.nombre AND Gen.nombre = ?', {
             replacements: [parametro],
             type: QueryTypes.SELECT });
         if(busqueda.length==0){
             res.json({mensaje:'No se han encontrado coincidencias'})
         }
-        else { res.json(busqueda) }
+        else { res.json(busqueda)
+        }
         }
         catch(error){
             return res.json(error)
         }    
     }
     else if(req.query.order){
+        const atributos = ['titulo', 'imagen', 'fechaCreacion', 'calificacion']
         try{
+            const data = await PeliculasDB.findAll({
+                attributes: atributos })
             if(parametro == 'ASC'){
-                parametro.push(['createdAt', 'ASC'])
+                res.json(data.sort())    
             }
-            else{
-                parametro.push(['createdAt', 'DESC'])
+            else if(parametro == 'DESC'){
+                res.json(data.reverse())
             }
-            return await PeliculasDB.findAll({
-                attributes: ['id', 'picture', 'title', 'createdAt'],
-                order: parametro})
         }
         catch(error){
             return res.json(error)

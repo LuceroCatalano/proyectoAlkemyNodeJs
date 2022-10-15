@@ -22,8 +22,6 @@ const PPsDB = PPs(sequelizeDB, Sequelize)
 
 sequelizeDB.sync( { force: false} );
 
-
-
 module.exports = {
     sequelizeDB,
     UsersDB,
