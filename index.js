@@ -1,4 +1,5 @@
 const express = require("express");
+const { PORT } = require("./config");
 const app = express();
 
 app.use(express.json());
@@ -8,4 +9,4 @@ const router = require ('./routes/router');
 
 app.use('/', router);
 
-app.listen(8080);
+app.listen(PORT);

@@ -1,6 +1,7 @@
 const { Sequelize } = require('sequelize')
+const { USUARIO, NOMBRE, PASS } = require("./config");
 
-const sequelizeDB = new Sequelize('cHC1H42Sdf','cHC1H42Sdf', 'Q0HW5hvC4R',{
+const sequelizeDB = new Sequelize(USUARIO, NOMBRE ,PASS ,{
     host: 'remotemysql.com',
     dialect:'mysql'
 });
